@@ -12,4 +12,6 @@ nutrition_energie.csv
 nutrition_gras.csv 
 nutrition_protéine.csv 
 nutrition_colesterol.csv 
+
+tous les fichiers doivent être triés en fonction de l'élément dont il est question. par exemple nutrition_gras.csv sera trié en fonction des valeurs de gras. 
  
