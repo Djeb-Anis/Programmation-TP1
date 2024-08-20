@@ -16,3 +16,5 @@ Lors de la programmation :
 Respecter les standards de programmation vus en cours!! (très important)  
 Commenter les résultats et les données en entrée 
 Utiliser les structures de boucle les plus adéquates 
+
+Le programme s’arrête une fois que l’utilisateur choisit de quitter le programme (choix 6).  
