@@ -1,18 +1,27 @@
-Consignes à suivre :   
+Le choix 5 permet d’insérer une entrée (Catégorie;Description;Energ_Kcal;Protéine;gras;Cholestérol;Sodium) au fichier NUTRITION.CSV. Vous devez afficher le format que le programme accepte.  
 
-Afficher le menu. 
-Permettre à l’utilisateur de saisir une nouvelle fois son choix ou son entrée en cas d’erreur.  
-Demander de confirmer avant chaque modification de données. 
-Avant de commencer à coder  
-Bien comprendre le problème 
-Identifier les données du problème 
-Résoudre pas à pas le problème 
-Ne traiter les détails qu’à la fin 
+Votre programme doit ensuite classer les données par ID, afficher l’ensemble du fichier NUTRITION.CSV et enregistrer le fichier.  
 
- 
 
-Lors de la programmation :
+************************************************************************************** 
 
-Respecter les standards de programmation vus en cours!! (très important)  
-Commenter les résultats et les données en entrée 
-Utiliser les structures de boucle les plus adéquates 
+Veuillez insérer un nouvel aliment sous cette forme                :     
+
+Catégorie;Description;Energ_Kcal;Protéine;gras;Cholestérol;Sodium 
+
+************************************************************************************** 
+
+Exemple :  
+
+Salades;Crispy Chicken California Cobb Salad;380;27;23;125;1170       
+
+************************************************************************************** 
+
+Validation de la nouvelle entrée --> 
+
+Insertion de la nouvelle entrée --> 
+
+Tri du tableau par ID --> 
+
+Affichage et enregistrement --> 
+
