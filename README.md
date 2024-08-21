@@ -1,4 +1,4 @@
-Étape 5
+Étape 4
 -
 Lorsque L’utilisateur choisit 4 dans le menu (Modification d’une valeur nutritive d’un aliment recherche par ID). 
 Le programme doit d’abord demander de quel aliment il s’agit. Ensuite, le programme affiche l’ensemble des nutriments pour que l’utilisateur puisse choisir un des nutriments. 
