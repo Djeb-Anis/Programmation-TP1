@@ -1,4 +1,4 @@
-Étape 2
+Étape 1
 ---------------------------------------------------------------
 Si l’utilisateur choisit 1 (Afficher l’ensemble des valeurs nutritives depuis le fichier NUTRITION.CSV) 
 Vous devez ouvrir le fichier NUTRITION.CSV donné avec l’énoncé de travail en lecture et afficher son contenu. 
