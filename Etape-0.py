@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout,
 
 fichier_csv = ("/Users/Charles/Desktop/nutrition.csv")
 
-
+########################## Etape 0 : ############################
 
 # Afficher l'ensemble des aliments depuis le fichier nutrition.csv
 
@@ -19,9 +19,29 @@ class MainWindow(QMainWindow):
 
         layout = QVBoxLayout()
 
-        self.show_button = QPushButton("voir les aliments")
+        self.show_button = QPushButton("Voir les aliments")
         self.show_button.clicked.connect(self.show_data)
         layout.addWidget(self.show_button)
+
+        self.show_button1 = QPushButton("Valeur nutritive")
+        self.show_button1.clicked.connect(self.show_data)
+        layout.addWidget(self.show_button1)
+
+        self.show_button2 = QPushButton("ID")
+        self.show_button2.clicked.connect(self.show_data)
+        layout.addWidget(self.show_button2)
+
+        self.show_button3 = QPushButton("Modifier")
+        self.show_button3.clicked.connect(self.show_data)
+        layout.addWidget(self.show_button3)
+
+        self.show_button4 = QPushButton("Ajouter")
+        self.show_button4.clicked.connect(self.show_data)
+        layout.addWidget(self.show_button4)
+
+        self.show_button5 = QPushButton("Quitter")
+        self.show_button5.clicked.connect(self.show_data)
+        layout.addWidget(self.show_button5)
 
         central_widget = QWidget()
         central_widget.setLayout(layout)
@@ -31,25 +51,10 @@ class MainWindow(QMainWindow):
         self.df_viewer(self.df, "Afficher les aliments")
 
     def df_viewer(self, df_show, title):
-        viewer = Dataviewer(df_show, title)
+        viewer = Client(df_show, title)
         viewer.exec()
 
-class Dataviewer(QDialog):
-    def __init__(self, df_show, title):
-        super().__init__()
-        self.setWindowTitle(title)
-        layout = QVBoxLayout()
-        self.table = QTableWidget()
-        self.table.setRowCount(df_show.shape[0])
-        self.table.setColumnCount(df_show.shape[1])
-        self.table.setHorizontalHeaderLabels(df_show.columns)
 
-        for i in range(df_show.shape[0]):
-            for j in range(df_show.shape[1]):
-                self.table.setItem(i, j, QTableWidgetItem(str(df_show.iat[i, j])))
-
-        layout.addWidget(self.table)
-        self.setLayout(layout)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
