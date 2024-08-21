@@ -3,7 +3,7 @@ import pandas as pd
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QFileDialog, QMessageBox, QDialog, QTableWidget, QTableWidgetItem, QVBoxLayout
 
 
-fichier_csv = ("/Users/Charles/Desktop/nutrition.csv")
+fichier_csv = ("./nutrition.csv")
 
 
 
