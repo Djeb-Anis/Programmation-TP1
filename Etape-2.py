@@ -23,33 +23,42 @@ class MainWindow(QMainWindow):
                               sep=";")  # sep = ";" est un parametre pandas qui determine les separateurs dans le fichier
 
         # Organise les widget verticalement
-        layout = QVBoxLayout()
+        self.layout = QVBoxLayout()
+
+        self.clear_layout()
 
         # Ajout des boutons dans le menu
         self.Etape_1_button = QPushButton("Afficher les aliments")
-        self.Etape_1_button.clicked.connect(
-            self.show_data)  # Fais le lien entre le bouton "Afficher les element" et le fichier
-        layout.addWidget(self.Etape_1_button)
+        self.Etape_1_button.clicked.connect(self.show_data)  # Fais le lien entre le bouton "Afficher les element" et le fichier
+        self.layout.addWidget(self.Etape_1_button)
 
         self.Etape_2_button = QPushButton("Valeur nutritive")
-        layout.addWidget(self.Etape_2_button)
+        self.Etape_2_button.clicked.connect(self.choisir_valeur_nutri)
+        self.layout.addWidget(self.Etape_2_button)
 
         self.Etape_3_button = QPushButton("ID")
-        layout.addWidget(self.Etape_3_button)
+        self.layout.addWidget(self.Etape_3_button)
 
         self.Etape_4_button = QPushButton("Modifier")
-        layout.addWidget(self.Etape_4_button)
+        self.layout.addWidget(self.Etape_4_button)
 
         self.Etape_5_button = QPushButton("Ajouter")
-        layout.addWidget(self.Etape_5_button)
+        self.layout.addWidget(self.Etape_5_button)
 
         self.boutton_quitter = QPushButton("Quitter")
-        layout.addWidget(self.boutton_quitter)
+        self.layout.addWidget(self.boutton_quitter)
 
         # Centralise les boutons
         central_widget = QWidget()
-        central_widget.setLayout(layout)
+        central_widget.setLayout(self.layout)
         self.setCentralWidget(central_widget)
+
+    # Méthode effaçant le reste des boutons et qui présente de nouveaux boutons
+    def clear_layout(self):
+        for i in reversed(range(self.layout.count())):
+            widget = self.layout.itemAt(i).widget()
+            if widget is not None:
+                widget.deleteLater()
 
     # --------------------------------- Méthodes Etape-1 ---------------------------------
 
@@ -64,6 +73,35 @@ class MainWindow(QMainWindow):
 
 
 # --------------------------------- Méthodes Etape-2 ---------------------------------
+
+    def choisir_valeur_nutri(self):
+
+        self.clear_layout()
+
+        self.proteines_button = QPushButton("Protéines")
+        self.layout.addWidget(self.proteines_button)
+
+        self.gras_button = QPushButton("Gras")
+        self.layout.addWidget(self.gras_button)
+
+        self.cholesterol_button = QPushButton("Cholésterol")
+        self.layout.addWidget(self.cholesterol_button)
+
+        self.sodium_button = QPushButton("Sodium")
+        self.layout.addWidget(self.sodium_button)
+
+        self.back_button = QPushButton("Retour")
+        self.back_button.clicked.connect(MainWindow) # THIS BUTTON STILL DOESN'T WORK
+        self.layout.addWidget(self.back_button)
+
+
+    def afficher_valeur_nutri(self):
+        self.df_viewer(self.df, "Valeur Nutritive")  # self.df = pd.read_csv(fichier_csv, sep=";")
+
+    # Afficher le fichier au viewer
+    def df_viewer(self, df_show, title):
+        viewer = DataViewer_Etape_2(df_show, title)  # Creer une instance pour le fichier csv
+        viewer.exec()
 
 
 # Classe pour afficher le contenu d'un fichier dans une fenetre de dialogue #
@@ -95,6 +133,31 @@ class Dataviewer(QDialog):
         layout.addWidget(self.table)
         # Organise la fenetre
         self.setLayout(layout)
+
+class DataViewer_Etape_2(QDialog): # PAS FINI, WILL MANIPULATE THE DF
+    def __init__(self, df_show, title):
+        super().__init__()
+        self.setWindowTitle(title) # Need title
+
+        # Creer un tableau pour les donnees
+        self.table = QTableWidget()
+
+        # Definis le nombre de ligne et de colonne en fonction du fichier
+        self.table.setRowCount(4)
+
+        # Definis les titres des colonnes du tableau en fonction du fichier
+        columns = df_show.iloc[:,[0, 1, 2, 3]]
+        self.table.setHorizontalHeaderLabels()
+
+
+
+
+
+
+
+
+
+
 
 
 # Creer une instance de QApplication
