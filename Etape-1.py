@@ -26,7 +26,7 @@ class MainWindow(QMainWindow):
 
         # Ajout des boutons dans le menu
         self.Etape_1_button = QPushButton("Afficher les aliments")
-        self.Etape_1_button.clicked.connect(self.show_data)  # Fais le lien entre le bouton "Afficher les element" et le fichier
+        self.Etape_1_button.clicked.connect(self.show_data)  # Fais le lien entre le bouton "Afficher les aliments" et le fichier
         layout.addWidget(self.Etape_1_button)
 
         self.Etape_2_button = QPushButton("Valeur nutritive")
