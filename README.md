@@ -1,4 +1,4 @@
-Étape 3
+Étape 2
 -
 Si l’utilisateur choisit 2 : Afficher les aliments en fonction d’une valeurs nutritives choisie par l’utilisateur.  
 Le programme affiche les valeurs  et enregistre le tout dans un fichier (nutrition_Sodium.csv)  
