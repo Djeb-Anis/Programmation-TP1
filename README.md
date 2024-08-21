@@ -1,4 +1,4 @@
-Étape 4
+Étape 3
 -
 Si l’utilisateur choisit 3 : Afficher les valeurs nutritives d’un aliment. La  recherche se fait par ID. 
 Le programme doit d’abord afficher l’ensemble des valeurs nutritives avec ID. Ensuite il demandera à l’utilisateur de saisir une chaîne de caractères correspondante à son ID.  
