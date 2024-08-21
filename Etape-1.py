@@ -25,29 +25,32 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout()
 
         # Ajout des boutons dans le menu
-        self.show_button = QPushButton("Afficher les aliments")
-        self.show_button.clicked.connect(self.show_data)  # Fais le lien entre le bouton "Afficher les element" et le fichier
-        layout.addWidget(self.show_button)
+        self.Etape_1_button = QPushButton("Afficher les aliments")
+        self.Etape_1_button.clicked.connect(self.show_data)  # Fais le lien entre le bouton "Afficher les element" et le fichier
+        layout.addWidget(self.Etape_1_button)
 
-        self.show_button1 = QPushButton("Valeur nutritive")
-        layout.addWidget(self.show_button1)
+        self.Etape_2_button = QPushButton("Valeur nutritive")
+        layout.addWidget(self.Etape_2_button)
 
-        self.show_button2 = QPushButton("ID")
-        layout.addWidget(self.show_button2)
+        self.Etape_3_button = QPushButton("ID")
+        layout.addWidget(self.Etape_3_button)
 
-        self.show_button3 = QPushButton("Modifier")
-        layout.addWidget(self.show_button3)
+        self.Etape_4_button = QPushButton("Modifier")
+        layout.addWidget(self.Etape_4_button)
 
-        self.show_button4 = QPushButton("Ajouter")
-        layout.addWidget(self.show_button4)
+        self.Etape_5_button = QPushButton("Ajouter")
+        layout.addWidget(self.Etape_5_button)
 
-        self.show_button5 = QPushButton("Quitter")
-        layout.addWidget(self.show_button5)
+        self.boutton_quitter = QPushButton("Quitter")
+        layout.addWidget(self.boutton_quitter)
 
         # Centralise les boutons
         central_widget = QWidget()
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
+
+
+# --------------------------------- Méthodes Etape-1 ---------------------------------
 
     # Afficher le fichier nutrition.csv dans une nouvelle fenetre.
     def show_data(self):
@@ -58,9 +61,17 @@ class MainWindow(QMainWindow):
         viewer = Dataviewer(df_show, title)  # Creer une instance pour le fichier csv
         viewer.exec()
 
-    # Classe pour afficher le contenu d'un fichier dans une fenetre de dialogue #
+# --------------------------------- Méthodes Etape-2 ---------------------------------
 
 
+
+
+
+
+
+
+
+# Classe pour afficher le contenu d'un fichier dans une fenetre de dialogue #
 class Dataviewer(QDialog):
     def __init__(self, df_show, title):
         super().__init__()
