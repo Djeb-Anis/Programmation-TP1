@@ -1,4 +1,4 @@
-Étapes 1 : affichage du menu  
+Étapes 0 : affichage du menu  
 -----------------------------------------------------------------
 Vous devez concevoir un menu sous python.  
 
