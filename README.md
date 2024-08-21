@@ -4,7 +4,7 @@ Afficher le menu.
 Permettre à l’utilisateur de saisir une nouvelle fois son choix ou son entrée en cas d’erreur.  
 Demander de confirmer avant chaque modification de données. 
 Avant de commencer à coder  
-Bien comprendre le problème 
+Bien comprendre      le problème 
 Identifier les données du problème 
 Résoudre pas à pas le problème 
 Ne traiter les détails qu’à la fin 
