@@ -80,20 +80,24 @@ class MainWindow(QMainWindow):
 
         self.proteines_button = QPushButton("Protéines")
         self.layout.addWidget(self.proteines_button)
+        self.proteines_button.clicked.connect(DataViewer_Etape_2(#Argument for specific button
+             ))
 
         self.gras_button = QPushButton("Gras")
         self.layout.addWidget(self.gras_button)
+        self.gras_button.clicked.connect(DataViewer_Etape_2())
 
         self.cholesterol_button = QPushButton("Cholésterol")
         self.layout.addWidget(self.cholesterol_button)
+        self.cholesterol_button.clicked.connect(DataViewer_Etape_2())
 
         self.sodium_button = QPushButton("Sodium")
         self.layout.addWidget(self.sodium_button)
+        self.sodium_button.clicked.connect(DataViewer_Etape_2)
 
         self.back_button = QPushButton("Retour")
-        self.back_button.clicked.connect(MainWindow) # THIS BUTTON STILL DOESN'T WORK
         self.layout.addWidget(self.back_button)
-
+        self.back_button.clicked.connect(MainWindow)  # THIS BUTTON STILL DOESN'T WORK
 
     def afficher_valeur_nutri(self):
         self.df_viewer(self.df, "Valeur Nutritive")  # self.df = pd.read_csv(fichier_csv, sep=";")
@@ -126,15 +130,14 @@ class Dataviewer(QDialog):
         # Boucle pour ajouter les donnees du fichier
         for i in range(df_show.shape[0]):  # Chaque ligne du fichier
             for j in range(df_show.shape[1]):  # Chaque colonne du fichier
-                self.table.setItem(i, j, QTableWidgetItem(str(df_show.iat[
-                                                                  i, j])))  # Creation d'un item dans le tableau selon l'emplacement de [i, j]    # .iat --> Accede/modifie un element dans un fichier en utilisant les indices [i, j]
+                self.table.setItem(i, j, QTableWidgetItem(str(df_show.iat[i, j])))  # Creation d'un item dans le tableau selon l'emplacement de [i, j]    # .iat --> Accede/modifie un element dans un fichier en utilisant les indices [i, j]
 
         # Ajout du tableau a la fenetre
         layout.addWidget(self.table)
         # Organise la fenetre
         self.setLayout(layout)
 
-class DataViewer_Etape_2(QDialog): # PAS FINI, WILL MANIPULATE THE DF
+class DataViewer_Etape_2(QDialog, type_button=None):
     def __init__(self, df_show, title):
         super().__init__()
         self.setWindowTitle(title) # Need title
