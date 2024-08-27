@@ -41,8 +41,9 @@ class MainWindow(QMainWindow):
         self.Etape_5_button = QPushButton("Ajouter")
         layout.addWidget(self.Etape_5_button)
 
-        self.boutton_quitter = QPushButton("Quitter")
-        layout.addWidget(self.boutton_quitter)
+        self.quit_button6 = QPushButton("Quitter")
+        self.quit_button6.clicked.connect(self.fermer_appli)
+        layout.addWidget(self.quit_button6)
 
         # Centralise les boutons
         central_widget = QWidget()
@@ -60,6 +61,15 @@ class MainWindow(QMainWindow):
     def df_viewer(self, df_show, title):
         viewer = Dataviewer(df_show, title)  # Creer une instance pour le fichier csv
         viewer.exec()
+
+    def fermer_appli(self):
+        reponse = QMessageBox.question(self, "Quitter", "Voulez-vous quitter ?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, QMessageBox.StandardButton.No)
+
+
+        if reponse == QMessageBox.StandardButton.Yes:
+            QMessageBox.information(self, "Au revoir", "Thank you come again !")
+            QApplication.quit()
+
 
 # --------------------------------- Méthodes Etape-2 ---------------------------------
 
