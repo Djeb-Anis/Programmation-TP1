@@ -65,10 +65,10 @@ class MainWindow(QMainWindow):
 
         self.clear_layout()
 
-        type_proteines = "Protéines"
-        self.proteines_button = QPushButton(type_proteines)
+        nom_proteines = 'Protéine'
+        self.proteines_button = QPushButton("Protéines")
         self.layout.addWidget(self.proteines_button)
-        self.proteines_button.clicked.connect(lambda: DataViewer_Etape_2(self.df, type_proteines))
+        self.proteines_button.clicked.connect(lambda: DataViewer_Etape_2(self.df, nom_proteines))
 
 
         self.gras_button = QPushButton("Gras")
@@ -89,16 +89,16 @@ class MainWindow(QMainWindow):
 
 
 class DataViewer_Etape_2(QDialog):
-    def __init__(self, original_df, type_button):
+    def __init__(self, original_df, nom_button):
 
         # Modifier mon dataframe original
         print(original_df.columns)
-        new_df = original_df[['Id', 'Catégorie', 'Description']]
+        new_df = original_df[['Id', 'Catégorie', 'Description']].copy()
+        new_df.loc[:, nom_button] = original_df[nom_button].values
         print('\n', new_df)
 
-
         super().__init__()
-        self.setWindowTitle(type_button) # Title will be name of Button
+        self.setWindowTitle(nom_button) # Title will be name of Button
 
         # Creer un tableau pour les donnees
         self.table = QTableWidget()
