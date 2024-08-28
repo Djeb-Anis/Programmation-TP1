@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout,
 
 fichier_csv = ("./nutrition.csv")
 
-
+#
 
 # Fonction effaçant le reste des boutons et qui présente de nouveaux boutons
 def clear_layout(window):
