@@ -83,7 +83,7 @@ class ajouter_element_window(QMainWindow):
         self.user_input.setPlaceholderText('Nouvel Aliment')
 
         self.OK_button = QPushButton('Ajouter')
-        self.OK_button.clicked.connect(lambda: DataViewer_Etape_2(self.df))
+        self.OK_button.clicked.connect(lambda: self.show_data_viewer(self.df, self.user_input))
 
         self.back_button = QPushButton("Retour")
         self.back_button.clicked.connect(lambda: self.open_main_window())  # THIS BUTTON STILL DOESN'T WORK
@@ -111,19 +111,29 @@ class ajouter_element_window(QMainWindow):
         self.main_window.show()  # Show the main window
         self.close()  # Close the current window if needed
 
-        def show_data_viewer(nom_button):
-            viewer = DataViewer_Etape_2(self.df, nom_button)
-            viewer.exec()
+    def show_data_viewer(self, original_df, user_input):
+        viewer = DataViewer_Etape_5(original_df, user_input)
+        viewer.exec()
 
 
-class DataViewer_Etape_2(QDialog):
-    def __init__(self, original_df):
+class DataViewer_Etape_5(QDialog):
 
-        # Générer mon nouveau dataframe en utilisant mon dataframe original
-        new_df = original_df[['Id', 'Catégorie', 'Description']].copy()
-        new_df.loc[:, nom_button] = original_df[nom_button].values
+    # Méthode Validation de l'entrée
+    def validation_entree(self, user_input):
+        expected_parts = 6
+        user_input = str(user_input)
+        parts = user_input.split(';')
+        if  len(parts) != expected_parts:
+            return False, "Ceci n'est pas une entrée valide."
+        else:
+            return True, "Entrée valide."
 
-        # -----------------GUI Part-----------------
+
+
+        # Insertion de la nouvelle entrée
+
+    # -----------------GUI Part-----------------
+    def __init__(self, original_df, user_input):
         super().__init__()
         self.setWindowTitle() # Title will be name of Button
 
