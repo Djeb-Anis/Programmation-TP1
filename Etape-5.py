@@ -1,7 +1,7 @@
 import sys
 import pandas as pd
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QFileDialog, QMessageBox, \
-    QDialog, QTableWidget, QTableWidgetItem, QVBoxLayout, QLabel, QTextEdit
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget, QFileDialog, QMessageBox, \
+    QDialog, QTableWidget, QTableWidgetItem, QVBoxLayout, QLabel, QLineEdit, QComboBox, QFormLayout
 from PyQt6.QtCore import Qt
 
 fichier_csv = ("./nutrition.csv")
@@ -68,19 +68,56 @@ class ajouter_element_window(QMainWindow):
         # Lecture du fichier csv
         self.df = pd.read_csv(fichier_csv, sep=';')
 
-        # clear_layout(self)
+        
+        self.setWindowTitle('Veuillez ajouter un aliment')
 
-        # nom_proteines = 'Protéine'
-        # self.proteines_button = QPushButton("Protéines")
-        # self.layout.addWidget(self.proteines_button)
-        # self.proteines_button.clicked.connect(lambda: show_data_viewer(nom_proteines))
+        # ----Catégorie----
+        self.Categorie_combo_box = QComboBox()
+        self.Categorie_combo_box.addItems(["Déjeuner", "Salade", "Sandwich", "Vinaigrette", "Frites", "Autre"])
+
+        self.Categorie_custom_input = QLineEdit()
+        self.Categorie_custom_input.setPlaceholderText("Autre")
+        self.Categorie_custom_input.setVisible(False)  # Initially hidden
+
+        self.Categorie_combo_box.currentIndexChanged.connect(self.Categorie_on_combobox_changed)
+        # ----Catégorie----
 
 
-        self.instructions = QLabel('Veuillez insérer un aliment sous cette forme')
-        self.example = QLabel('Catégorie;Description;Energ_Kcal;Protéine;gras;Cholestérol;Sodium')
+        # ----Déscription----
+        self.Descr_input = QLineEdit()
+        self.Descr_input.setPlaceholderText("Déscription")
+        # ----Déscription----
 
-        self.user_input = QTextEdit()
-        self.user_input.setPlaceholderText('Nouvel Aliment')
+
+        # ----Énergie----
+        self.Energie_input = QLineEdit()
+        self.Energie_input.setPlaceholderText("Kcal")
+        # ----Énergie----
+
+
+        # ----Protéines----
+        self.Prot_input = QLineEdit()
+        self.Prot_input.setPlaceholderText("(g)")
+        # ----Protéines----
+
+
+        # ----Gras----
+        self.Gras_input = QLineEdit()
+        self.Gras_input.setPlaceholderText("(g)")
+        # ----Gras----
+
+
+        # ----Cholestérol----
+        self.Chol_input = QLineEdit()
+        self.Chol_input.setPlaceholderText("(g)")
+        # ----Cholestérol----
+
+        # ----Sodium----
+        self.Sodium_input = QLineEdit()
+        self.Sodium_input.setPlaceholderText("(g)")
+        # ----Sodium----
+
+
 
         self.OK_button = QPushButton('Ajouter')
         self.OK_button.clicked.connect(lambda: self.show_data_viewer(self.df, self.user_input))
@@ -89,22 +126,57 @@ class ajouter_element_window(QMainWindow):
         self.back_button.clicked.connect(lambda: self.open_main_window())  # THIS BUTTON STILL DOESN'T WORK
 
         # Créer mon layout
-        layout = QVBoxLayout()
-        layout.addWidget(self.instructions)
-        layout.addWidget(self.example)
-        layout.addWidget(self.user_input)
-        layout.addWidget(self.OK_button)
-        layout.addWidget(self.back_button)
+        layout = QFormLayout()
+
+        layout.addRow("Catégorie", self.Categorie_combo_box)
+        layout.addRow(self.Categorie_custom_input)
+
+        layout.addRow("Déscription", self.Descr_input)
+
+        layout.addRow("Énergie", self.Energie_input)
+
+        layout.addRow("Protéines", self.Prot_input)
+
+        layout.addRow("Gras", self.Gras_input)
+
+        layout.addRow("Cholestérol", self.Chol_input)
+
+        layout.addRow("Sodium", self.Sodium_input)
+
+
+        layout.addRow(self.OK_button)
+        layout.addRow(self.back_button)
 
         # Set my layout
         central_widget = QWidget()
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
 
-        # Set alignement
-        self.instructions.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.example.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        # self.user_input.setAlignment(Qt.AlignmentFlag.AlignCenter) This doesn't work properly
+
+
+
+    #Fonction permettant l'utilisation du drop down menu
+    def Categorie_on_combobox_changed(self, index):
+        # Show or hide the custom input based on selection
+        if self.Categorie_combo_box.currentText() == "Other":
+            self.Categorie_custom_input.setVisible(True)
+            self.Categorie_custom_input.setFocus()  # Set focus to the line edit
+        else:
+            self.Categorie_custom_input.setVisible(False)
+            #self.instructions.setText(f"Selected: {self.Categorie_combo_box.currentText()}")
+
+
+    # This will be used to add any custom option chosen to the current options list
+    # def add_custom_option(self):
+    #     # Get the custom input text
+    #     custom_text = self.Categorie_custom_input.text().strip()
+    #     if custom_text and custom_text not in self.Categorie_combo_box.itemTexts():
+    #         # Add the custom option to the combo box
+    #         self.Categorie_combo_box.addItem(custom_text)
+    #         self.Categorie_combo_box.setCurrentText(custom_text)  # Set the combo box to the new option
+    #         self.label.setText(f"Selected: {custom_text}")
+    #         self.Categorie_custom_input.clear()  # Clear the input field
+
 
     def open_main_window(self):
         self.main_window = MainWindow()  # Create an instance of MainWindow
@@ -156,13 +228,6 @@ class DataViewer_Etape_5(QDialog):
         layout = QVBoxLayout()
         layout.addWidget(self.table)
         self.setLayout(layout)
-
-
-
-
-
-
-
 
 
 # Creer une instance de QApplication
