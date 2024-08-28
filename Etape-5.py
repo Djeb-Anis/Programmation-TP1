@@ -2,6 +2,7 @@ import sys
 import pandas as pd
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget, QFileDialog, QMessageBox, \
     QDialog, QTableWidget, QTableWidgetItem, QVBoxLayout, QLabel, QLineEdit, QComboBox, QFormLayout
+from PyQt6.QtGui import QIntValidator, QValidator
 from PyQt6.QtCore import Qt
 
 fichier_csv = ("./nutrition.csv")
@@ -59,7 +60,8 @@ class MainWindow(QMainWindow):
         other_window.show()
 
 
-# --------------------------------- Méthodes Etape-2 ---------------------------------
+# --------------------------------- Classes et Méthodes Etape-5 ---------------------------------
+
 
 class ajouter_element_window(QMainWindow):
     def __init__(self):
@@ -68,8 +70,11 @@ class ajouter_element_window(QMainWindow):
         # Lecture du fichier csv
         self.df = pd.read_csv(fichier_csv, sep=';')
 
-        
+        # Charactéristiques de la fenêtre
         self.setWindowTitle('Veuillez ajouter un aliment')
+
+        # Méthodes validant les données entrées
+        self.int_validator = QIntValidator(0, 100000)
 
         # ----Catégorie----
         self.Categorie_combo_box = QComboBox()
@@ -86,41 +91,47 @@ class ajouter_element_window(QMainWindow):
         # ----Déscription----
         self.Descr_input = QLineEdit()
         self.Descr_input.setPlaceholderText("Déscription")
+        self.Descr_input.setValidator(LatinLetterValidator())
         # ----Déscription----
 
 
         # ----Énergie----
         self.Energie_input = QLineEdit()
         self.Energie_input.setPlaceholderText("Kcal")
+        self.Energie_input.setValidator(self.int_validator)
         # ----Énergie----
 
 
         # ----Protéines----
         self.Prot_input = QLineEdit()
         self.Prot_input.setPlaceholderText("(g)")
+        self.Prot_input.setValidator(self.int_validator)
         # ----Protéines----
 
 
         # ----Gras----
         self.Gras_input = QLineEdit()
         self.Gras_input.setPlaceholderText("(g)")
+        self.Gras_input.setValidator(self.int_validator)
         # ----Gras----
 
 
         # ----Cholestérol----
         self.Chol_input = QLineEdit()
         self.Chol_input.setPlaceholderText("(g)")
+        self.Chol_input.setValidator(self.int_validator)
         # ----Cholestérol----
 
         # ----Sodium----
         self.Sodium_input = QLineEdit()
         self.Sodium_input.setPlaceholderText("(g)")
+        self.Sodium_input.setValidator(self.int_validator)
         # ----Sodium----
 
 
 
         self.OK_button = QPushButton('Ajouter')
-        self.OK_button.clicked.connect(lambda: self.show_data_viewer(self.df, self.user_input))
+        self.OK_button.clicked.connect(lambda: self.prep_data(self.df))
 
         self.back_button = QPushButton("Retour")
         self.back_button.clicked.connect(lambda: self.open_main_window())  # THIS BUTTON STILL DOESN'T WORK
@@ -153,8 +164,6 @@ class ajouter_element_window(QMainWindow):
         self.setCentralWidget(central_widget)
 
 
-
-
     #Fonction permettant l'utilisation du drop down menu
     def Categorie_on_combobox_changed(self, index):
         # Show or hide the custom input based on selection
@@ -178,34 +187,96 @@ class ajouter_element_window(QMainWindow):
     #         self.Categorie_custom_input.clear()  # Clear the input field
 
 
+    # Méthode permettant d'ouvrir le message d'erreur
+    def ouvrir_Erreur_input(self):
+        dialog = Erreur_input()  # Pass the main window as the parent
+        dialog.setWindowModality(Qt.WindowModality.ApplicationModal)  # Optional: Set modality
+        dialog.resize(200, 100)  # Resize the dialog to a suitable size
+
+        # Center the dialog relative to the main window
+        main_window_rect = self.geometry()
+        dialog_rect = dialog.geometry()
+        x = main_window_rect.x() + (main_window_rect.width() - dialog_rect.width()) // 2
+        y = main_window_rect.y() + (main_window_rect.height() - dialog_rect.height()) // 2
+        dialog.move(x, y)
+
+        dialog.exec()  # Show the dialog as modal
+
+    def prep_data(self, original_df):
+        # Création Liste composée du input de chaque catégorie
+        element_list = [
+            self.Categorie_combo_box, self.Categorie_custom_input, self.Descr_input, self.Energie_input,
+            self.Prot_input, self.Gras_input, self.Chol_input, self.Sodium_input
+            ]
+
+        # Seconde liste vide
+        text_element_list = []
+
+        # Check which category input is used and remove the QComboBox object
+        if self.Categorie_combo_box and self.Categorie_combo_box.currentText():
+            input = self.Categorie_combo_box.currentText()
+            self.Categorie_custom_input.setText(input)
+            element_list.remove(self.Categorie_combo_box)
+        elif self.Categorie_custom_input and self.Categorie_custom_input.text():
+            element_list.remove(self.Categorie_combo_box)
+
+        # Iterate over the list and check if any element is empty
+        for element in element_list:
+            if element.text():
+                text_element_list.append(element.text())
+            else:
+                self.ouvrir_Erreur_input()
+                return False
+
+        print(text_element_list)
+        print(original_df.head())
+        # THERE IS MISMATCH BETWEEN THE NUMBER OF COLUMNS AND THE NUMBER OF ELEMENTS IN THE LIST
+        # I NEED TO GET THE BIGGEST ID IN THE DF AND APPEND IT ITS VALUE+1 TO MY LIST, WITH INDEX 0
+        # Ajout du nouvel aliment au data frame du fichier excel
+        #new_df = original_df.loc[len(original_df)] = text_element_list
+        print("OK")
+        # Appel de la classe permettant d'afficher le data frame
+        # viewer = DataViewer_Etape_5(new_df)
+        # viewer.exec()
+        # return True
+
+
     def open_main_window(self):
         self.main_window = MainWindow()  # Create an instance of MainWindow
         self.main_window.show()  # Show the main window
         self.close()  # Close the current window if needed
 
-    def show_data_viewer(self, original_df, user_input):
-        viewer = DataViewer_Etape_5(original_df, user_input)
-        viewer.exec()
 
+# CLasse contenant la fenêtre de dialogue en cas d'érreur
+class Erreur_input(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Erreur")
+        self.setModal(True)
+
+        self.message_erreur = QLabel("Une ou plusieurs entrées sont vides")
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.message_erreur)
+
+        self.setLayout(layout)
+
+
+# Classe permettant la validation de caractères alphanumériques
+class LatinLetterValidator(QValidator):
+    def validate(self, input_str, pos):
+        # Check if the input string contains only Latin letters
+        if all(char.isalpha() for char in input_str):
+            return QValidator.State.Acceptable, input_str, pos
+        else:
+            return QValidator.State.Invalid, input_str, pos
 
 class DataViewer_Etape_5(QDialog):
-
-    # Méthode Validation de l'entrée
-    def validation_entree(self, user_input):
-        expected_parts = 6
-        user_input = str(user_input)
-        parts = user_input.split(';')
-        if  len(parts) != expected_parts:
-            return False, "Ceci n'est pas une entrée valide."
-        else:
-            return True, "Entrée valide."
-
-
 
         # Insertion de la nouvelle entrée
 
     # -----------------GUI Part-----------------
-    def __init__(self, original_df, user_input):
+    def __init__(self, original_df):
         super().__init__()
         self.setWindowTitle() # Title will be name of Button
 
