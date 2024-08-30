@@ -232,13 +232,19 @@ class ajouter_element_window(QMainWindow):
         print(original_df.head())
         # THERE IS MISMATCH BETWEEN THE NUMBER OF COLUMNS AND THE NUMBER OF ELEMENTS IN THE LIST
         # I NEED TO GET THE BIGGEST ID IN THE DF AND APPEND IT ITS VALUE+1 TO MY LIST, WITH INDEX 0
+
+        # Fetch the biggest ID in the original_df and append it to text_element_list with index 0
+        ID = str(int(original_df['Id'].max()) + 1)
+        text_element_list.insert(0, ID)
+
         # Ajout du nouvel aliment au data frame du fichier excel
-        #new_df = original_df.loc[len(original_df)] = text_element_list
-        print("OK")
+        new_row = pd.DataFrame([text_element_list], columns=original_df.columns)
+        new_df = pd.concat([original_df, new_row], ignore_index=True)
+
         # Appel de la classe permettant d'afficher le data frame
-        # viewer = DataViewer_Etape_5(new_df)
-        # viewer.exec()
-        # return True
+        viewer = DataViewer_Etape_5(new_df)
+        viewer.exec()
+        return True
 
 
     def open_main_window(self):
@@ -276,24 +282,29 @@ class DataViewer_Etape_5(QDialog):
         # Insertion de la nouvelle entrée
 
     # -----------------GUI Part-----------------
-    def __init__(self, original_df):
+    def __init__(self, df):
         super().__init__()
-        self.setWindowTitle() # Title will be name of Button
+        self.setWindowTitle("Nouveau Fichier") # Title will be name of Button
 
+        # Tri du df par ID
+        df['Id'] = pd.to_numeric(df['Id'], errors='coerce')  # This will convert str types to int types and non-convertible values to NaN
+        tri_ID_df = df.sort_values(by='Id')
+
+        # Export du nouveau fichier csv
+        tri_ID_df.to_csv('Nouveau_Fichier.csv', index_label=False, sep=';')
 
         # Creer un tableau pour les donnees
         self.table = QTableWidget()
 
         # Définir le nombre de colonnes et rangées
-        self.table.setRowCount(new_df.shape[0])
-        self.table.setColumnCount(new_df.shape[1])
-        self.table.setHorizontalHeaderLabels(new_df.columns)
-        # self.table.setVerticalHeaderLabels(new_df.index.astype(str).tolist()) Maybe add this idk yet
+        self.table.setRowCount(tri_ID_df.shape[0])
+        self.table.setColumnCount(tri_ID_df.shape[1])
+        self.table.setHorizontalHeaderLabels(tri_ID_df.columns)
 
         # Boucle pour ajouter les donnees du fichier
-        for i in range(new_df.shape[0]):  # Chaque ligne du fichier
-            for j in range(new_df.shape[1]):  # Chaque colonne du fichier
-                self.table.setItem(i, j, QTableWidgetItem(str(new_df.iat[i, j])))  # Creation d'un item dans le tableau selon l'emplacement de [i, j]    # .iat --> Accede/modifie un element dans un fichier en utilisant les indices [i, j]
+        for i in range(tri_ID_df.shape[0]):  # Chaque ligne du fichier
+            for j in range(tri_ID_df.shape[1]):  # Chaque colonne du fichier
+                self.table.setItem(i, j, QTableWidgetItem(str(tri_ID_df.iat[i, j])))  # Creation d'un item dans le tableau selon l'emplacement de [i, j]    # .iat --> Accede/modifie un element dans un fichier en utilisant les indices [i, j]
 
         # Créer mon layout
         layout = QVBoxLayout()
