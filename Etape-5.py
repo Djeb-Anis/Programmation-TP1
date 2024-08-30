@@ -1,11 +1,21 @@
 import sys
+import os
 import pandas as pd
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget, QFileDialog, QMessageBox, \
     QDialog, QTableWidget, QTableWidgetItem, QVBoxLayout, QLabel, QLineEdit, QComboBox, QFormLayout
 from PyQt6.QtGui import QIntValidator, QValidator
 from PyQt6.QtCore import Qt
 
-fichier_csv = ("./nutrition.csv")
+
+# Définission du fichier csv (vérifier si nous n'en avons pas généré un au préalable)
+directory = './'
+new_file_csv = 'Nouveau_Fichier.csv'
+new_file_csv_path = os.path.join(directory, new_file_csv)
+
+if os.path.exists(new_file_csv_path):
+    fichier_csv = new_file_csv_path
+else:
+    fichier_csv = ("./nutrition.csv")
 
 
 
@@ -69,6 +79,7 @@ class ajouter_element_window(QMainWindow):
 
         # Lecture du fichier csv
         self.df = pd.read_csv(fichier_csv, sep=';')
+
 
         # Charactéristiques de la fenêtre
         self.setWindowTitle('Veuillez ajouter un aliment')
@@ -167,7 +178,7 @@ class ajouter_element_window(QMainWindow):
     #Fonction permettant l'utilisation du drop down menu
     def Categorie_on_combobox_changed(self, index):
         # Show or hide the custom input based on selection
-        if self.Categorie_combo_box.currentText() == "Other":
+        if self.Categorie_combo_box.currentText() == "Autre":
             self.Categorie_custom_input.setVisible(True)
             self.Categorie_custom_input.setFocus()  # Set focus to the line edit
         else:
@@ -175,16 +186,16 @@ class ajouter_element_window(QMainWindow):
             #self.instructions.setText(f"Selected: {self.Categorie_combo_box.currentText()}")
 
 
-    # This will be used to add any custom option chosen to the current options list
-    # def add_custom_option(self):
-    #     # Get the custom input text
-    #     custom_text = self.Categorie_custom_input.text().strip()
-    #     if custom_text and custom_text not in self.Categorie_combo_box.itemTexts():
-    #         # Add the custom option to the combo box
-    #         self.Categorie_combo_box.addItem(custom_text)
-    #         self.Categorie_combo_box.setCurrentText(custom_text)  # Set the combo box to the new option
-    #         self.label.setText(f"Selected: {custom_text}")
-    #         self.Categorie_custom_input.clear()  # Clear the input field
+    # Fonction permettant l'ajout d'une option Autre
+    def add_custom_option(self):
+        # Get the custom input text
+        custom_text = self.Categorie_custom_input.text().strip()
+        if custom_text and custom_text not in self.Categorie_combo_box.itemTexts():
+            # Add the custom option to the combo box
+            self.Categorie_combo_box.addItem(custom_text)
+            self.Categorie_combo_box.setCurrentText(custom_text)  # Set the combo box to the new option
+            self.label.setText(f"Selected: {custom_text}")
+            self.Categorie_custom_input.clear()  # Clear the input field
 
 
     # Méthode permettant d'ouvrir le message d'erreur
@@ -202,36 +213,49 @@ class ajouter_element_window(QMainWindow):
 
         dialog.exec()  # Show the dialog as modal
 
+    # Méthode préparant les données rentrées par l'utilisateur à être utilisées dans le fichiers csv
     def prep_data(self, original_df):
-        # Création Liste composée du input de chaque catégorie
+        # Create a list composed of the input from each category
         element_list = [
             self.Categorie_combo_box, self.Categorie_custom_input, self.Descr_input, self.Energie_input,
             self.Prot_input, self.Gras_input, self.Chol_input, self.Sodium_input
-            ]
+        ]
 
-        # Seconde liste vide
+        # Second empty list to hold text inputs
         text_element_list = []
 
-        # Check which category input is used and remove the QComboBox object
-        if self.Categorie_combo_box and self.Categorie_combo_box.currentText():
+        # Check which category input is used
+        if self.Categorie_combo_box.currentText() == "Autre" and self.Categorie_custom_input.text():
+            # If "Autre" is selected, use the custom input
+            input = self.Categorie_custom_input.text()
+        else:
+            # Otherwise, use the selected category from the combo box
             input = self.Categorie_combo_box.currentText()
-            self.Categorie_custom_input.setText(input)
-            element_list.remove(self.Categorie_combo_box)
-        elif self.Categorie_custom_input and self.Categorie_custom_input.text():
-            element_list.remove(self.Categorie_combo_box)
 
-        # Iterate over the list and check if any element is empty
-        for element in element_list:
+        # Add the selected or custom category to the text_element_list
+        text_element_list.append(input)
+        print(text_element_list)
+
+        # Iterate over the rest of the elements and check if any are empty
+        for element in element_list[2:]:  # Skip the first element since it's already added
             if element.text():
                 text_element_list.append(element.text())
             else:
                 self.ouvrir_Erreur_input()
                 return False
 
-        print(text_element_list)
-        print(original_df.head())
-        # THERE IS MISMATCH BETWEEN THE NUMBER OF COLUMNS AND THE NUMBER OF ELEMENTS IN THE LIST
-        # I NEED TO GET THE BIGGEST ID IN THE DF AND APPEND IT ITS VALUE+1 TO MY LIST, WITH INDEX 0
+        # Fetch the biggest ID in the original_df and append it to text_element_list with index 0
+        ID = str(int(original_df['Id'].max()) + 1)
+        text_element_list.insert(0, ID)
+
+        # Add the new food item to the DataFrame from the Excel file
+        new_row = pd.DataFrame([text_element_list], columns=original_df.columns)
+        new_df = pd.concat([original_df, new_row], ignore_index=True)
+
+        # Call the class to display the DataFrame
+        viewer = DataViewer_Etape_5(new_df)
+        viewer.exec()
+        return True
 
         # Fetch the biggest ID in the original_df and append it to text_element_list with index 0
         ID = str(int(original_df['Id'].max()) + 1)
