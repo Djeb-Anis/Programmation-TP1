@@ -1,0 +1,151 @@
+/* Main Window */
+QMainWindow {
+    background-color: #f0f0f0; /* Light background for the main window */
+    font-family: Arial, sans-serif; /* Clean font */
+    font-size: 14px; /* Base font size */
+    color: black; /* Text color */
+}
+
+/* Push Buttons */
+QPushButton {
+    background-color: #007BFF; /* Bootstrap primary color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px 15px; /* Padding for button */
+    font-size: 16px; /* Font size for button text */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+QPushButton:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+QPushButton:pressed {
+    background-color: #004085; /* Even darker blue when pressed */
+}
+
+/* Labels */
+QLabel {
+    color: #333; /* Dark text color */
+    font-weight: bold; /* Bold text for labels */
+    margin-bottom: 5px; /* Space below labels */
+}
+
+/* Line Edits */
+QLineEdit {
+    background-color: white; /* White background for input fields */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Padding inside the input field */
+    font-size: 14px; /* Font size for input text */
+    color: black; /* Text color */
+}
+
+QLineEdit:focus {
+    border: 1px solid #007BFF; /* Blue border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Subtle shadow on focus */
+}
+
+/* Form Layout */
+QFormLayout {
+    margin: 20px; /* Margin around the form layout */
+}
+
+/* Spacing between form elements */
+QFormLayout > * {
+    margin-bottom: 15px; /* Space between form elements */
+}
+
+/* Dialog Window */
+QDialog {
+    background-color: #f0f0f0; /* Light background for the dialog */
+    font-family: Arial, sans-serif; /* Clean font */
+    font-size: 14px; /* Base font size */
+    border-radius: 10px; /* Rounded corners for the dialog */
+    padding: 20px; /* Padding inside the dialog */
+}
+
+/* Dialog Title */
+QDialog QLabel {
+    color: #333; /* Dark text color for the title */
+    font-weight: bold; /* Bold text for the title */
+    font-size: 16px; /* Larger font size for the title */
+    margin-bottom: 10px; /* Space below the title */
+}
+
+/* Push Buttons in Dialog */
+QDialog QPushButton {
+    background-color: #007BFF; /* Bootstrap primary color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px 15px; /* Padding for button */
+    font-size: 16px; /* Font size for button text */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+QDialog QPushButton:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+QDialog QPushButton:pressed {
+    background-color: #004085; /* Even darker blue when pressed */
+}
+
+/* Line Edits in Dialog */
+QDialog QLineEdit {
+    background-color: white; /* White background for input fields */
+    color: black; /* Text color */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Padding inside the input field */
+    font-size: 14px; /* Font size for input text */
+}
+
+QDialog QLineEdit:focus {
+    border: 1px solid #007BFF; /* Blue border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Subtle shadow on focus */
+}
+
+/* Form Layout in Dialog */
+QDialog QFormLayout {
+    margin: 20px; /* Margin around the form layout */
+}
+
+/* Spacing between form elements in Dialog */
+QDialog QFormLayout > * {
+    margin-bottom: 15px; /* Space between form elements */
+}
+
+/* Combo Box */
+QComboBox {
+    background-color: white; /* White background for the combo box */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Padding inside the combo box */
+    font-size: 14px; /* Font size for combo box text */
+    color: black; /* Text color */
+}
+
+/* Arrow Button */
+QComboBox::drop-down {
+    background-color: #007BFF; /* Background color for the drop-down button */
+    border: none; /* No border */
+    width: 30px; /* Width of the drop-down button */
+}
+
+
+/* Combo Box Items */
+QComboBox QAbstractItemView {
+    background-color: white; /* Background color for the drop-down list */
+    border: 1px solid #ccc; /* Light gray border for the list */
+    selection-background-color: #007BFF; /* Background color for selected item */
+    selection-color: white; /* Text color for selected item */
+}
+
+/* Hover Effect for Items */
+QComboBox QAbstractItemView::item:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    color: white; /* Text color on hover */
+}

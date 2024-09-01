@@ -4,9 +4,10 @@ import csv
 import pandas as pd
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget, QDialog, QTableWidget, \
     QTableWidgetItem, QVBoxLayout, QMessageBox, QLineEdit, QComboBox, QFormLayout, QLabel, QTableView, \
-    QAbstractItemView, QFileDialog, QInputDialog
+    QAbstractItemView, QFileDialog, QInputDialog, QGridLayout, QSizePolicy
 from PyQt6.QtGui import QIntValidator, QValidator, QStandardItemModel, QStandardItem
 from PyQt6.QtCore import Qt, QAbstractTableModel
+
 
 directory = './'
 new_file_csv = 'Nouveau_Fichier.csv'
@@ -34,8 +35,8 @@ class MainWindow(QMainWindow):
         self.other_windows = []
 
         # Dimension de la fenêtre principale
-        self.setWindowTitle("Nutrition")
-        self.setGeometry(100, 100, 800, 600)
+        self.setWindowTitle("Nutrition-App")
+        self.setGeometry(200, 100, 400, 200)
 
         # Organiser les widgets verticalement
         self.layout = QVBoxLayout()
@@ -47,7 +48,15 @@ class MainWindow(QMainWindow):
 
         self.initialize_ui()
 
+        self.load_stylesheet('Style.css')
+
     # Méthodes associées à la classe MainWindow
+
+    # Méthode permettant de charger le style sheet
+    def load_stylesheet(self, filename):
+        with open(filename, "r") as file:
+            stylesheet = file.read()
+            self.setStyleSheet(stylesheet)
 
     def initialize_ui(self):
         # Effacer les widgets précédents
@@ -115,6 +124,9 @@ class MainWindow(QMainWindow):
 
         clear_layout(self)
 
+        # Window dimensions
+        self.setGeometry(200, 100, 400, 200)
+
         # Créer les boutons pour les différentes valeurs nutritives
         self.proteines_button = QPushButton("Protéines")
         self.layout.addWidget(self.proteines_button)
@@ -147,6 +159,7 @@ class Dataviewer_Etape_1(QDialog):
     def __init__(self, df_show, title):
         super().__init__()
         self.setWindowTitle(title)
+        self.setGeometry(100, 100, 900, 500)
 
         # Organiser la fenêtre de dialogue
         layout = QVBoxLayout()
@@ -168,6 +181,15 @@ class Dataviewer_Etape_1(QDialog):
         # Organiser la fenêtre
         self.setLayout(layout)
 
+        # Chargement du stylesheet
+        self.load_stylesheet('Style.css')
+
+    # Méthode permettant de charger le style sheet
+    def load_stylesheet(self, filename):
+        with open(filename, "r") as file:
+            stylesheet = file.read()
+            self.setStyleSheet(stylesheet)
+
 
 #-------------------------- ÉTAPE 2 --------------------------
 
@@ -175,6 +197,7 @@ class DataViewer_Etape_2(QDialog):
     def __init__(self, original_df, nom_button):
         super().__init__()
         self.setWindowTitle(nom_button)
+        self.setGeometry(100, 100, 900, 500)
 
         # Générer un nouveau DataFrame en utilisant le DataFrame original
         new_df = original_df[['Id', 'Catégorie', 'Description']].copy()
@@ -202,11 +225,21 @@ class DataViewer_Etape_2(QDialog):
         layout.addWidget(self.table)
         self.setLayout(layout)
 
+        # Chargement du stylesheet
+        self.load_stylesheet('Style.css')
+
+    # Méthode permettant de charger le style sheet
+    def load_stylesheet(self, filename):
+        with open(filename, "r") as file:
+            stylesheet = file.read()
+            self.setStyleSheet(stylesheet)
+
 
 #-------------------------- ÉTAPE 3 --------------------------
 
 # Modèle personnalisé permettant d'afficher le data frame intégré dans la fenêtre
 class PandasModel(QAbstractTableModel):
+
     def __init__(self, dataframe):
         super().__init__()
         self._dataframe = dataframe
@@ -236,10 +269,10 @@ class rechrcher_par_Id(QDialog):
         super().__init__()
 
         # Création du data frame
-        self.df = pd.read_csv(fichier_csv, sep=';')  # Replace with your actual CSV file path
-
+        self.df = pd.read_csv(fichier_csv, sep=';')
         # Caractéristiques de la fenêtre
         self.setWindowTitle('Recherche par Id')
+        self.setGeometry(500, 200, 650, 250)
         self.setModal(True)  # Set the dialog to be modal
 
         # Ajout Input Field pour la recherche de l'Id
@@ -254,6 +287,8 @@ class rechrcher_par_Id(QDialog):
         # Ajout d'un field permettant d'afficher le résultat de la recherche
         self.Recherche_result = QLabel()
         self.Recherche_result.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.Recherche_result.setMinimumSize(500, 50)  # Set a minimum width and height
+
 
         # Ajout bouton back
         self.back_button = QPushButton('Retour')
@@ -261,26 +296,32 @@ class rechrcher_par_Id(QDialog):
 
         # Créer un QTableView pour afficher le DataFrame
         self.table_view = QTableView()
-        self.update_table_view(self.df)
+        self.update_table_view(self.df[['Id']])  # Initialize with only the Id column
 
-        # Création de mon layout et ajout des éléments au layout
-        layout = QVBoxLayout()
-        layout.addWidget(self.table_view)
-        layout.addWidget(self.Input_Id)
-        layout.addWidget(self.Recherche_result)
-        layout.addWidget(self.Recherche_boutton)
-        layout.addWidget(self.back_button)
+        # Création de mon layout et ajout des éléments au layout, ainsi que répartition
+        layout = QGridLayout()
+        layout.addWidget(self.table_view, 0, 0, 7, 1)
+        layout.addWidget(self.Input_Id, 0, 1, 2, 5)
+        layout.addWidget(self.Recherche_result, 2, 1, 2, 5)
+        layout.addWidget(self.Recherche_boutton, 4, 1, 1, 5)
+        layout.addWidget(self.back_button, 5, 1, 1, 5)
 
-        # Créer un widget central
-        central_widget = QWidget()
-        central_widget.setLayout(layout)
-
-        # Définir le widget central de la fenêtre principale
+        # Définir le layout
         self.setLayout(layout)
+
+        # Chargement du stylesheet
+        self.load_stylesheet('Style.css')
+
+    # Méthode permettant de charger le style sheet
+    def load_stylesheet(self, filename):
+        with open(filename, "r") as file:
+            stylesheet = file.read()
+            self.setStyleSheet(stylesheet)
 
     def update_table_view(self, dataframe):
         model = PandasModel(dataframe)
         self.table_view.setModel(model)
+
 
     def recherche_Id(self, Id):
         Id_str = str(Id)
@@ -291,10 +332,10 @@ class rechrcher_par_Id(QDialog):
             # Imprimer le résultat
             result_txt = ';'.join(result.iloc[0].astype(str).values)
             self.Recherche_result.setText(result_txt)
+
         else:
             message_erreur = "Id non trouvé"
             self.Recherche_result.setText(message_erreur)
-
     def retour(self):
         self.close()
 
@@ -311,6 +352,15 @@ class NutritionApp(QDialog):
         self.file_name = ''  # Variable pour stocker le nom du fichier chargé
 
         self.init_ui()  # Initialisation de l'interface utilisateur
+
+        # Chargement du stylesheet
+        self.load_stylesheet('Style.css')
+
+    # Méthode permettant de charger le style sheet
+    def load_stylesheet(self, filename):
+        with open(filename, "r") as file:
+            stylesheet = file.read()
+            self.setStyleSheet(stylesheet)
 
     # Définition méthode retour
     def retour(self):
@@ -481,7 +531,7 @@ def valeurNutritiveValides(nutriment, nutriments_valides):
 
 #-------------------------- ÉTAPE 5 --------------------------
 
-class ajouter_element_window(QMainWindow):
+class ajouter_element_window(QDialog):
     def __init__(self):
         super().__init__()
 
@@ -491,6 +541,7 @@ class ajouter_element_window(QMainWindow):
 
         # Charactéristiques de la fenêtre
         self.setWindowTitle('Veuillez ajouter un aliment')
+        self.setGeometry(650, 100, 250, 150)
 
         # Méthodes validant les données entrées
         self.int_validator = QIntValidator(0, 100000)
@@ -577,13 +628,23 @@ class ajouter_element_window(QMainWindow):
         layout.addRow(self.OK_button)
         layout.addRow(self.back_button)
 
-        # Set my layout
-        central_widget = QWidget()
-        central_widget.setLayout(layout)
-        self.setCentralWidget(central_widget)
+        # # Set my layout
+        # central_widget = QWidget()
+        # central_widget.setLayout(layout)
+        # self.setCentralWidget(central_widget)
+        self.setLayout(layout)
+
+        # Chargement du stylesheet
+        self.load_stylesheet('Style.css')
+
+    # Méthode permettant de charger le style sheet
+    def load_stylesheet(self, filename):
+        with open(filename, "r") as file:
+            stylesheet = file.read()
+            self.setStyleSheet(stylesheet)
 
 
-    #Fonction permettant l'utilisation du drop down menu
+    # Méthode permettant l'utilisation du drop down menu
     def Categorie_on_combobox_changed(self, index):
         # Show or hide the custom input based on selection
         if self.Categorie_combo_box.currentText() == "Autre":
@@ -594,7 +655,7 @@ class ajouter_element_window(QMainWindow):
             #self.instructions.setText(f"Selected: {self.Categorie_combo_box.currentText()}")
 
 
-    # Fonction permettant l'ajout d'une option Autre
+    # Méthode permettant l'ajout d'une option Autre
     def add_custom_option(self):
         # Get the custom input text
         custom_text = self.Categorie_custom_input.text().strip()
