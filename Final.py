@@ -101,9 +101,6 @@ class MainWindow(QMainWindow):
         self.back_button.clicked.connect(self.initialize_ui)
 
     def show_data_viewer(self, nom_button):
-        if nom_button not in self.df.columns:
-            QMessageBox.warning(self, "Erreur", f"Colonne '{nom_button}' non trouvée dans le fichier CSV.")
-            return
 
         viewer = DataViewer_Etape_2(self.df, nom_button)
         viewer.exec()
