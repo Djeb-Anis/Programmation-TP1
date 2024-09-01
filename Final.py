@@ -2,9 +2,9 @@ import sys
 import os
 import pandas as pd
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QDialog, QTableWidget, \
-    QTableWidgetItem, QVBoxLayout, QMessageBox, QLineEdit, QComboBox, QFormLayout, QLabel
+    QTableWidgetItem, QVBoxLayout, QMessageBox, QLineEdit, QComboBox, QFormLayout, QLabel, QTableView
 from PyQt6.QtGui import QIntValidator, QValidator
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QAbstractTableModel
 
 directory = './'
 new_file_csv = 'Nouveau_Fichier.csv'
@@ -28,6 +28,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        # Création d'une liste pour garder les variables contenant les autres fenêtres vivantes
+        self.other_windows = []
+
         # Dimension de la fenêtre principale
         self.setWindowTitle("Nutrition")
         self.setGeometry(100, 100, 800, 600)
@@ -41,6 +44,8 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
 
         self.initialize_ui()
+
+    # Méthodes associées à la classe MainWindow
 
     def initialize_ui(self):
         # Effacer les widgets précédents
@@ -57,6 +62,7 @@ class MainWindow(QMainWindow):
 
         self.Etape_3_button = QPushButton("ID")
         self.layout.addWidget(self.Etape_3_button)
+        self.Etape_3_button.clicked.connect(lambda: self.open_rechrcher_par_Id())
 
         self.Etape_4_button = QPushButton("Modifier")
         self.layout.addWidget(self.Etape_4_button)
@@ -69,8 +75,6 @@ class MainWindow(QMainWindow):
         self.boutton_quitter.clicked.connect(self.fermer_appli)
         self.layout.addWidget(self.boutton_quitter)
 
-    # Méthodes associées à la classe MainWindow
-
     def show_data(self):
         # Lecture du fichier CSV
         self.df = pd.read_csv(fichier_csv, sep=';')
@@ -78,12 +82,18 @@ class MainWindow(QMainWindow):
 
     # Afficher le fichier au viewer
     def df_viewer(self, df_show, title):
-        viewer = Dataviewer(df_show, title)  # Créer une instance pour le fichier CSV
+        viewer = Dataviewer_Etape_1(df_show, title)  # Créer une instance pour le fichier CSV
         viewer.exec()
 
     def open_ajouter_element_window(self):
-        other_window = ajouter_element_window()
-        other_window.show()
+        window_ajout = ajouter_element_window()
+        window_ajout.show()
+        self.other_windows.append(window_ajout) # Ajout de la fenêtre à la liste initialisée précédement
+
+    def open_rechrcher_par_Id(self):
+        window_Id = rechrcher_par_Id()
+        window_Id.show()
+        self.other_windows.append(window_Id) # Ajout de la fenêtre à la liste initialisée précédement
 
     def fermer_appli(self):
         reponse = QMessageBox.question(self, "Quitter", "Voulez-vous quitter ?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, QMessageBox.StandardButton.No)
@@ -125,7 +135,7 @@ class MainWindow(QMainWindow):
 
 #-------------------------- ÉTAPE 1 --------------------------
 
-class Dataviewer(QDialog):
+class Dataviewer_Etape_1(QDialog):
     def __init__(self, df_show, title):
         super().__init__()
         self.setWindowTitle(title)
@@ -186,6 +196,102 @@ class DataViewer_Etape_2(QDialog):
 
 
 #-------------------------- ÉTAPE 3 --------------------------
+
+# Modèle personnalisé permettant d'afficher le data frame intégré dans la fenêtre
+class PandasModel(QAbstractTableModel):
+    def __init__(self, dataframe):
+        super().__init__()
+        self._dataframe = dataframe
+
+    def rowCount(self, parent=None):
+        return self._dataframe.shape[0]
+
+    def columnCount(self, parent=None):
+        return self._dataframe.shape[1]
+
+    def data(self, index, role=Qt.ItemDataRole.DisplayRole):
+        if index.isValid() and role == Qt.ItemDataRole.DisplayRole:
+            return str(self._dataframe.iat[index.row(), index.column()])
+        return None
+
+    def headerData(self, section, orientation, role):
+        if role == Qt.ItemDataRole.DisplayRole:
+            if orientation == Qt.Orientation.Horizontal:
+                return self._dataframe.columns[section]
+            else:
+                return self._dataframe.index[section]
+        return None
+
+class rechrcher_par_Id(QDialog):
+
+    def __init__(self):
+        super().__init__()
+
+        # Création du data frame
+        self.df = pd.read_csv(fichier_csv, sep=';')  # Replace with your actual CSV file path
+
+        # Caractéristiques de la fenêtre
+        self.setWindowTitle('Recherche par Id')
+        self.setModal(True)  # Set the dialog to be modal
+
+        # Ajout Input Field pour la recherche de l'Id
+        self.Input_Id = QLineEdit()
+        self.Input_Id.setPlaceholderText("Entrez l'Id ici")
+        self.Input_Id.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        # Ajout bouton recherche
+        self.Recherche_boutton = QPushButton('Rechercher')
+        self.Recherche_boutton.clicked.connect(lambda: self.recherche_Id(self.Input_Id.text()))
+
+        # Ajout d'un field permettant d'afficher le résultat de la recherche
+        self.Recherche_result = QLabel()
+        self.Recherche_result.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        # Ajout bouton back
+        self.back_button = QPushButton('Retour')
+        self.back_button.clicked.connect(self.retour)
+
+        # Créer un QTableView pour afficher le DataFrame
+        self.table_view = QTableView()
+        self.update_table_view(self.df)
+
+        # Création de mon layout et ajout des éléments au layout
+        layout = QVBoxLayout()
+        layout.addWidget(self.table_view)
+        layout.addWidget(self.Input_Id)
+        layout.addWidget(self.Recherche_result)
+        layout.addWidget(self.Recherche_boutton)
+        layout.addWidget(self.back_button)
+
+        # Créer un widget central
+        central_widget = QWidget()
+        central_widget.setLayout(layout)
+
+        # Définir le widget central de la fenêtre principale
+        self.setLayout(layout)
+
+    def update_table_view(self, dataframe):
+        model = PandasModel(dataframe)
+        self.table_view.setModel(model)
+
+    def recherche_Id(self, Id):
+        Id_str = str(Id)
+
+        # Check if the Id exists in the DataFrame
+        if (self.df['Id'].astype(str) == Id_str).any():
+            result = self.df[self.df['Id'].astype(str) == Id_str]
+            # Imprimer le résultat
+            result_txt = ';'.join(result.iloc[0].astype(str).values)
+            self.Recherche_result.setText(result_txt)
+        else:
+            message_erreur = "Id non trouvé"
+            self.Recherche_result.setText(message_erreur)
+
+    def retour(self):
+        self.close()
+
+
+
 
 #-------------------------- ÉTAPE 4 --------------------------
 
@@ -463,7 +569,7 @@ class DataViewer_Etape_5(QDialog):
 # Créer une instance de QApplication
 app = QApplication(sys.argv)
 # Créer une instance de MainWindow
-window = MainWindow()
-window.show()
+main_window = MainWindow()
+main_window.show()
 # Exécuter la boucle de l'application
 sys.exit(app.exec())
