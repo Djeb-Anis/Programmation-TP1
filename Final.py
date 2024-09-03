@@ -149,7 +149,8 @@ class MainWindow(QMainWindow):
         self.back_button.clicked.connect(self.initialize_ui)
 
     def show_data_viewer(self, nom_button):
-        viewer = DataViewer_Etape_2(self.df, nom_button)
+        sorted_df = self.df[['Id', 'Catégorie', 'Description', nom_button]].sort_values(by=nom_button, ascending=False)
+        viewer = DataViewer_Etape_2(sorted_df, nom_button)
         viewer.exec()
 
 
